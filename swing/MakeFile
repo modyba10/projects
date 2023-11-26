@@ -1,28 +1,28 @@
-JAVAC = javac
-JAVA = java
-OUT_DIR = out
+# Nom du programme
+CLIENT=client
+SERVER=server
 
-# Liste des fichiers source Java
-SRCS = $(wildcard *.java)
+# Fichiers sources
+CLIENT_SOURCES=client.cpp ccsocket.cpp 
+SERVER_SOURCES=Multimedia.cpp MediaManager.cpp server.cpp tcpserver.cpp ccsocket.cpp 
 
-# Générer la liste des fichiers .class en utilisant les noms des fichiers sources
-CLASSES = $(patsubst %.java,$(OUT_DIR)/%.class,$(SRCS))
+# Compilateur C++
+CXX= g++
+CXXFLAGS= -std=c++11 -Wall -g
+LDLIBS= -lpthread
 
-# Cible par défaut pour compiler tous les fichiers .java
-all: $(CLASSES)
+# Règles de construction
+all: ${CLIENT} ${SERVER}
 
-# Règle pour compiler les fichiers .java en fichiers .class
-$(OUT_DIR)/%.class: %.java
-	@mkdir -p $(OUT_DIR)
-	$(JAVAC) -d $(OUT_DIR) $<
+${CLIENT}: ${CLIENT_SOURCES}
+	${CXX} -o $@ ${CXXFLAGS} ${CLIENT_SOURCES} ${LDLIBS}
 
-# Cible pour exécuter la classe MainFrame
-run: all
-	$(JAVA) -cp $(OUT_DIR) MainFrame
+${SERVER}: ${SERVER_SOURCES}
+	${CXX} -o $@ ${CXXFLAGS} ${SERVER_SOURCES} ${LDLIBS}
 
-# Cible pour nettoyer les fichiers .class générés
+# Règle pour exécuter le serveur
+run: ${SERVER}
+	./${SERVER}
+
 clean:
-	rm -rf $(OUT_DIR)
-
-# Règles phony pour éviter les conflits avec les noms des fichiers/fichiers cibles
-.PHONY: all run clean
+	rm -f ${CLIENT} ${SERVER}
