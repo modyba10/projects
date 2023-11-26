@@ -1,0 +1,28 @@
+JAVAC = javac
+JAVA = java
+OUT_DIR = out
+
+# Liste des fichiers source Java
+SRCS = $(wildcard *.java)
+
+# Générer la liste des fichiers .class en utilisant les noms des fichiers sources
+CLASSES = $(patsubst %.java,$(OUT_DIR)/%.class,$(SRCS))
+
+# Cible par défaut pour compiler tous les fichiers .java
+all: $(CLASSES)
+
+# Règle pour compiler les fichiers .java en fichiers .class
+$(OUT_DIR)/%.class: %.java
+	@mkdir -p $(OUT_DIR)
+	$(JAVAC) -d $(OUT_DIR) $<
+
+# Cible pour exécuter la classe MainFrame
+run: all
+	$(JAVA) -cp $(OUT_DIR) MainFrame
+
+# Cible pour nettoyer les fichiers .class générés
+clean:
+	rm -rf $(OUT_DIR)
+
+# Règles phony pour éviter les conflits avec les noms des fichiers/fichiers cibles
+.PHONY: all run clean
